@@ -17,7 +17,24 @@ public class GitHubService : IGitHubService {
     return repos.ToList();
   }
 
-  public void SelectRepository() {
+  public async Task<List<Issue>> SelectRepository(WizardUser user, long repoId) {
+    var issues = await user.UserData!.Client!.Issue.GetAllForRepository(repoId);
+    return issues.ToList();
+  }
 
+  public async void AddIssues(WizardUser user, List<Issue> issues) {
+
+  }
+
+  public async void AddIssue(WizardUser user, Issue issue, long repoId) {
+    var newIssue = new NewIssue(issue.Title);
+    foreach (var asignee in issue.Assignees) {
+      newIssue.Assignees.Add(asignee.Login);
+    }
+    foreach (var labels in issue.Labels) {
+      newIssue.Labels.Add(labels.Name);
+    }
+    newIssue.Body = issue.Body;
+    await user.UserData!.Client!.Issue.Create(repoId, newIssue);
   }
 }

@@ -12,4 +12,5 @@ namespace SaveWizard.Core.Interfaces;
 public interface IGitHubService {
   Task<User> GetBasicData(GitHubClient client);
   Task<List<Repository>> GetAllPrivateRepositories(WizardUser user);
+  Task<List<Issue>> SelectRepository(WizardUser user, long repoId);
 }
