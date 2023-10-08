@@ -33,11 +33,23 @@ public class BackupService : IBackupService {
   }
 
   public async Task<List<DbBackupRecord>> GetBackupsByUserId(Guid id) {
-    var backup = await _recordsRepository.GetRecordsByUserId(id);
-    if (backup == null) {
+    var backups = await _recordsRepository.GetRecordsByUserId(id);
+    if (backups == null) {
       return null!;
     }
-    return backup;
+    return backups;
+  }
+
+  public async Task<List<DbBackupRecord>> GetLatestBackupsByUserId(Guid id) {
+    var backups = await _recordsRepository.GetRecordsByUserIdOrdered(id);
+    if (backups == null) {
+      return null!;
+    }
+    var newest = new List<DbBackupRecord>();
+    foreach (var backup in backups) {
+      newest.Add(backup.First());
+    }
+    return newest;
   }
 
   public void DefineServices(IServiceCollection services) {

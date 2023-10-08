@@ -35,6 +35,13 @@ public class IOService : IIOService {
     return filenames;
   }
 
+  public void RemoveFromDisk(string filename) {
+    var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+    var destination = Path.Combine(documentsPath, WizardConstants.SaveDirectory, filename);
+
+    File.Delete(destination);
+  }
+
   public void DefineServices(IServiceCollection services) {
     services.AddSingleton<IIOService, IOService>();
   }

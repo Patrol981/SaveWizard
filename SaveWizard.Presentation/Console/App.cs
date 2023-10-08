@@ -15,13 +15,21 @@ public class App {
   private WizardUser _user;
 
   private string _buffer = "";
-  private string _token = "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";
+  private string _token = "";
 
   public App() {
     _user = new WizardUser();
   }
 
   public async Task<Task> Run() {
+    Console.Write("Enter GitHub Personal Access Token: ");
+    _token = Console.ReadLine();
+
+    if (string.IsNullOrEmpty(_token)) {
+      Console.WriteLine("Token is empty");
+      return Task.CompletedTask;
+    }
+
     SetupServices();
     await Init();
     Render();
@@ -80,6 +88,9 @@ public class App {
           SelectBackup(options[2]);
         }
         break;
+      case WizardConstants.Delete:
+        await RemoveBackup(options[1]);
+        break;
       case WizardConstants.Clear:
         ConsoleGraphics.Clear();
         break;
@@ -87,6 +98,23 @@ public class App {
         Console.WriteLine("Unknown Command");
         break;
     }
+  }
+
+  private async Task<Task> RemoveBackup(string id) {
+    var backupService = ServiceManager.GetService<IBackupService>();
+    var ioService = ServiceManager.GetService<IIOService>();
+
+    var guid = Guid.Parse(id);
+    var backupInfo = await backupService.GetBackupById(guid);
+
+    if (backupInfo == null) {
+      return Task.CompletedTask;
+    }
+
+    await backupService.RemoveBackup(guid);
+    ioService.RemoveFromDisk(backupInfo.Filename!);
+
+    return Task.CompletedTask;
   }
 
   private async Task<Task> PrintAll() {
@@ -110,15 +138,17 @@ public class App {
     var backupService = ServiceManager.GetService<IBackupService>();
 
     var files = ioService.GetBackups().ToArray();
-    var backups = await backupService.GetBackupsByUserId(_user.WizardId);
+    var backups = await backupService.GetLatestBackupsByUserId(_user.WizardId);
 
-    for (short i = 0; i < backups.Count; i++) {
-      var fileTarget = files.Where(x => x == backups[i].Filename).FirstOrDefault();
+    foreach (var backup in backups) {
+      var fileTarget = files.Where(x => x == backup.Filename).FirstOrDefault();
       if (fileTarget == null) {
         continue;
       }
-      Console.WriteLine($"[B] [{backups[i].Id}] [{backups[i].RepositoryName}] [{fileTarget}]");
+
+      Console.WriteLine($"[B] [{backup.Id}] [{backup.RepositoryName}] [{fileTarget}]");
     }
+
     return Task.CompletedTask;
   }
 
@@ -173,20 +203,10 @@ public class App {
   }
 
   private void SetupServices() {
-    /*
-    var services = new ServiceCollection()
-      .AddSingleton<IGitHubService, GitHubService>()
-      .AddSingleton<IEncryptionService, EncryptionService>()
-      .AddSingleton<IIOService, IOService>()
-      .AddDbContext<WizardContext>()
-      .AddScoped<DbUserRepository>()
-      .AddScoped<DbBackupRecordsRepository>()
-      .AddScoped<IUserService, UserService>()
-      .AddScoped<IBackupService, BackupService>();
+    ServiceManager.Services.ConfigureAll(typeof(IWizardService), typeof(IWizardDbContext));
+    ServiceManager.SetProvider(ServiceManager.Services);
 
-    ServiceManager.SetProvider(services);
-    */
-
-    ServiceManager.Services.ConfigureServices(typeof(IWizardService));
+    var db = ServiceManager.GetService<WizardContext>();
+    db.Database.Migrate();
   }
 }

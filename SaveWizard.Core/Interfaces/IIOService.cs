@@ -3,4 +3,5 @@ public interface IIOService : IWizardService {
   void SaveFile(byte[] data, string filename);
   byte[] LoadFile(string filename);
   ReadOnlySpan<string> GetBackups();
+  void RemoveFromDisk(string filename);
 }

@@ -6,4 +6,5 @@ public interface IBackupService : IWizardService {
   Task<Task> RemoveBackup(Guid id);
   Task<DbBackupRecord> GetBackupById(Guid id);
   Task<List<DbBackupRecord>> GetBackupsByUserId(Guid id);
+  Task<List<DbBackupRecord>> GetLatestBackupsByUserId(Guid id);
 }

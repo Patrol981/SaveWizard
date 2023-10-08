@@ -10,7 +10,7 @@ public static class ConsoleGraphics {
     Console.WriteLine($"" +
       $"[{WizardConstants.Print} (repos/backups/all)] \n" +
       $"[{WizardConstants.Select} (repo/backup) (id)] \n" +
-      $"[{WizardConstants.Read} (filename)] \n" +
+      $"[{WizardConstants.Delete} (backupId)] \n" +
       $"[{WizardConstants.Clear}]"
     );
   }

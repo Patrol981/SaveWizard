@@ -41,4 +41,16 @@ public class DbBackupRecordsRepository {
     }
     return record;
   }
+
+  public async Task<List<IOrderedEnumerable<DbBackupRecord>>> GetRecordsByUserIdOrdered(Guid id) {
+    var record = await _wizardContext.Backups.Where(x => x.UserId == id).ToListAsync();
+    if (record == null) {
+      return null!;
+    }
+    var result = record
+      .GroupBy(x => x.RepositoryName)
+      .Select(g => g.OrderByDescending(x => x.Date))
+      .ToList();
+    return result;
+  }
 }

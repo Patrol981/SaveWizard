@@ -14,12 +14,32 @@ public static class ServiceManager {
 
   public static T GetService<T>() => Provider.GetRequiredService<T>();
 
+  public static void ConfigureAll(this IServiceCollection services, params Type[] markers) {
+    var wizardServices = new List<IWizardService>();
+    var contexts = new List<IWizardDbContext>();
+
+    foreach (var marker in markers) {
+      wizardServices.AddRange(GetAssemblies<IWizardService>(marker));
+      contexts.AddRange(GetAssemblies<IWizardDbContext>(marker));
+    }
+
+    foreach (var wizardService in wizardServices) {
+      wizardService.DefineServices(services);
+    }
+
+    foreach (var context in contexts) {
+      context.ConfigureContext(services);
+    }
+
+    services.AddSingleton(wizardServices as IReadOnlyCollection<IWizardService>);
+    services.AddSingleton(contexts as IReadOnlyCollection<IWizardDbContext>);
+  }
+
   public static void ConfigureServices(this IServiceCollection services, params Type[] markers) {
     var wizardServices = new List<IWizardService>();
+
     foreach (var marker in markers) {
-      wizardServices.AddRange(marker.Assembly.ExportedTypes
-        .Where(x => typeof(IWizardService).IsAssignableFrom(x) && !x.IsAbstract)
-        .Select(Activator.CreateInstance).Cast<IWizardService>());
+      wizardServices.AddRange(GetAssemblies<IWizardService>(marker));
     }
 
     foreach (var wizardService in wizardServices) {
@@ -27,6 +47,11 @@ public static class ServiceManager {
     }
 
     services.AddSingleton(wizardServices as IReadOnlyCollection<IWizardService>);
-    SetProvider(services);
+  }
+
+  private static IEnumerable<T> GetAssemblies<T>(Type marker) {
+    return marker.Assembly.ExportedTypes
+        .Where(x => typeof(T).IsAssignableFrom(x) && !x.IsAbstract)
+        .Select(Activator.CreateInstance).Cast<T>();
   }
 }
