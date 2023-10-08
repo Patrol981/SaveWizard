@@ -1,9 +1,11 @@
 ﻿using SaveWizard.Models;
 
 using Microsoft.EntityFrameworkCore;
+using SaveWizard.Core.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace SaveWizard.Core;
-public class WizardContext : DbContext {
+public class WizardContext : DbContext, IWizardService {
   public DbSet<DbUser> Users { get; set; }
   public DbSet<DbBackupRecord> Backups { get; set; }
 
@@ -17,5 +19,9 @@ public class WizardContext : DbContext {
 
   protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
     optionsBuilder.UseSqlite($"Data Source={DbPath}");
+  }
+
+  public void DefineServices(IServiceCollection services) {
+    services.AddScoped<WizardContext>();
   }
 }

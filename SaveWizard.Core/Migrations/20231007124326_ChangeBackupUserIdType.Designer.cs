@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SaveWizard.Core;
 
@@ -10,9 +11,11 @@ using SaveWizard.Core;
 namespace SaveWizard.Core.Migrations
 {
     [DbContext(typeof(WizardContext))]
-    partial class WizardContextModelSnapshot : ModelSnapshot
+    [Migration("20231007124326_ChangeBackupUserIdType")]
+    partial class ChangeBackupUserIdType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.11");
@@ -23,14 +26,7 @@ namespace SaveWizard.Core.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Filename")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("RepositoryName")
                         .IsRequired()
                         .HasColumnType("TEXT");
 

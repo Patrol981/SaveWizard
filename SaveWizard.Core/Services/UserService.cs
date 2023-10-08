@@ -3,16 +3,19 @@ using SaveWizard.Core.Repositories;
 using SaveWizard.Models;
 using SaveWizard.Authorization;
 using SaveWizard.Authorization.GitHub;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace SaveWizard.Core.Services;
 public class UserService : IUserService {
   private readonly DbUserRepository _userRepository;
 
+  public UserService() { }
+
   public UserService(DbUserRepository dbUserRepository) {
     _userRepository = dbUserRepository;
   }
 
-  public async Task<Task> AddUser(WizardUser user) {
+  public async Task<WizardUser> AddUser(WizardUser user) {
     var newUser = new DbUser();
     newUser.Id = Guid.NewGuid();
     newUser.PlatformId = user.PlatformId;
@@ -22,7 +25,10 @@ public class UserService : IUserService {
     newUser.PersonalAccessToken = user.UserData!.AccessToken;
 
     await _userRepository.AddUser(newUser);
-    return Task.CompletedTask;
+
+    user.WizardId = newUser.Id;
+
+    return user;
   }
 
   public async Task<WizardUser> GetUserByAccessToken(string token) {
@@ -36,6 +42,7 @@ public class UserService : IUserService {
     wizard.Email = user.Email;
     wizard.EnryptionKey = user.EnryptionKey;
     wizard.UserData.AccessToken = user.PersonalAccessToken;
+    wizard.WizardId = user.Id;
 
     wizard.CreateGitHubUser(token);
 
@@ -48,5 +55,10 @@ public class UserService : IUserService {
 
   public Task<WizardUser> GetUserByPlatformId(long id) {
     throw new NotImplementedException();
+  }
+
+  public void DefineServices(IServiceCollection services) {
+    services.AddScoped<DbUserRepository>();
+    services.AddScoped<IUserService, UserService>();
   }
 }

@@ -8,8 +8,9 @@ public static class ConsoleGraphics {
 
   public static void DrawOptions() {
     Console.WriteLine($"" +
-      $"[{WizardConstants.Print}]" +
-      $"[{WizardConstants.Select} (repositoy)]" +
+      $"[{WizardConstants.Print} (repos/backups/all)] \n" +
+      $"[{WizardConstants.Select} (repo/backup) (id)] \n" +
+      $"[{WizardConstants.Read} (filename)] \n" +
       $"[{WizardConstants.Clear}]"
     );
   }

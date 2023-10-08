@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SaveWizard.Core;
 
@@ -10,9 +11,11 @@ using SaveWizard.Core;
 namespace SaveWizard.Core.Migrations
 {
     [DbContext(typeof(WizardContext))]
-    partial class WizardContextModelSnapshot : ModelSnapshot
+    [Migration("20231007132202_AddRepoNameDateToBackup")]
+    partial class AddRepoNameDateToBackup
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.11");

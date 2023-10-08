@@ -3,6 +3,8 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+using Microsoft.Extensions.DependencyInjection;
+
 using SaveWizard.Core.Interfaces;
 
 namespace SaveWizard.Core.Services;
@@ -91,5 +93,9 @@ public class EncryptionService : IEncryptionService {
 
     var result = Encoding.UTF8.GetString(decryptedBytes);
     return result;
+  }
+
+  public void DefineServices(IServiceCollection services) {
+    services.AddSingleton<IEncryptionService, EncryptionService>();
   }
 }

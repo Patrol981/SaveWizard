@@ -7,5 +7,12 @@ public static class WizardConstants {
   public const string Clear = "clear";
   public const string Read = "read";
 
+  public const string Repos = "repos";
+  public const string Backups = "backups";
+  public const string All = "all";
+
+  public const string Repo = "repo";
+  public const string Backup = "backup";
+
   public const string SaveDirectory = "SaveWizard/backups";
 }
