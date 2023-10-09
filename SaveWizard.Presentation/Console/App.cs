@@ -8,6 +8,7 @@ using System.Threading.Tasks.Sources;
 using SaveWizard.Core;
 using Microsoft.EntityFrameworkCore;
 using SaveWizard.Core.Repositories;
+using Octokit;
 
 namespace ConsoleWizard;
 
@@ -56,6 +57,18 @@ public class App {
     } else {
       _user = user;
     }
+
+    var miscellaneousRateLimit = await _user.UserData!.Client!.RateLimit.GetRateLimits();
+    var coreRateLimit = miscellaneousRateLimit.Resources.Core;
+
+    var howManyCoreRequestsCanIMakePerHour = coreRateLimit.Limit;
+    var howManyCoreRequestsDoIHaveLeft = coreRateLimit.Remaining;
+    var whenDoesTheCoreLimitReset = coreRateLimit.Reset; // UTC time
+
+    Console.WriteLine("Limits:");
+    Console.WriteLine($"Requests per hour: {howManyCoreRequestsCanIMakePerHour}");
+    Console.WriteLine($"Requests left: {howManyCoreRequestsDoIHaveLeft}");
+    Console.WriteLine($"Resets in: {whenDoesTheCoreLimitReset}");
 
     return Task.CompletedTask;
   }
@@ -164,7 +177,7 @@ public class App {
     var file = ioService.LoadFile(result.Filename!);
     var data = encryptionService.DecryptData<BackupData>(file, _user.EnryptionKey!);
 
-    await githubService.AddIssues(_user, data.WizardIssues, data.RepositoryId);
+    await githubService.AddIssuesToNewRemote(_user, data.WizardIssues, $"{result.RepositoryName}_{result.Date.ToString("yyyyMMddTHHmmss")}");
   }
 
   private async void SelectRepo(string id) {

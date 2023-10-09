@@ -9,4 +9,5 @@ public interface IGitHubService : IWizardService {
   Task<RepositoryResponse> SelectRepository(WizardUser user, long repoId);
   Task<Task> AddIssues(WizardUser user, List<WizardIssue> issues, long repoId);
   Task<Task> AddIssue(WizardUser user, WizardIssue issue, long repoId);
+  Task<Task> AddIssuesToNewRemote(WizardUser user, List<WizardIssue> issues, string repoName);
 }

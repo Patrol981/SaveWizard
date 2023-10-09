@@ -56,6 +56,22 @@ public class GitHubService : IGitHubService {
     return Task.CompletedTask;
   }
 
+  public async Task<Task> AddIssuesToNewRemote(WizardUser user, List<WizardIssue> issues, string repoName) {
+    var newRepo = new NewRepository(repoName);
+    newRepo.Private = true;
+    var result = await user.UserData!.Client!.Repository.Create(newRepo);
+    var info = await user.UserData!.Client!.Repository.Get(user.Username, repoName);
+
+    // somehow Octokit even after awaiting result will give validation crash if adding issues
+    // cames right after creating repository so the delay is needed
+    await Task.Delay(1000);
+
+    for (short i = 0; i < issues.Count; i++) {
+      await AddIssue(user, issues[i], info.Id);
+    }
+    return Task.CompletedTask;
+  }
+
   public async Task<Task> AddIssue(WizardUser user, WizardIssue issue, long repoId) {
     var newIssue = new NewIssue(issue.Title);
     foreach (var label in issue.Labels) {
