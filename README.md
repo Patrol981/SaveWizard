@@ -8,6 +8,14 @@ Appliaction for backing up issues from github
 - Delete backup if not needed anymore
 - Restore encrypted data as <b>*new*</b> repository origin named after <b>*repository name*</b> followed by <b>*creation time*</b>
 
+## Example usage
+```sh
+print repos
+select repo some_repo_id
+print backups
+select backup some_backup_id
+```
+
 ## How to run
 "As is" inside SaveWizard.Presentation/Console
 ```shell
