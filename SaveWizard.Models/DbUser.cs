@@ -9,7 +9,7 @@ public class DbUser {
   public string? Name { get; set; }
   public string? Email { get; set; }
   [Required]
-  public string? EnryptionKey { get; set; }
+  public string? EncryptionKey { get; set; }
   [Required]
   public string? PersonalAccessToken { get; set; }
 }

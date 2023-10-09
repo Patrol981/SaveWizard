@@ -32,7 +32,7 @@ namespace SaveWizard.Core.Migrations
                     PlatformId = table.Column<long>(type: "INTEGER", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: true),
                     Email = table.Column<string>(type: "TEXT", nullable: true),
-                    EnryptionKey = table.Column<string>(type: "TEXT", nullable: false),
+                    EncryptionKey = table.Column<string>(type: "TEXT", nullable: false),
                     PersonalAccessToken = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>

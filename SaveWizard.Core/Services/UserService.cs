@@ -19,7 +19,7 @@ public class UserService : IUserService {
     var newUser = new DbUser();
     newUser.Id = Guid.NewGuid();
     newUser.PlatformId = user.PlatformId;
-    newUser.EnryptionKey = user.EnryptionKey;
+    newUser.EncryptionKey = user.EncryptionKey;
     newUser.Email = user.Email;
     newUser.Name = user.Username;
     newUser.PersonalAccessToken = user.UserData!.AccessToken;
@@ -40,7 +40,7 @@ public class UserService : IUserService {
     wizard.PlatformId = user.PlatformId;
     wizard.Username = user.Name;
     wizard.Email = user.Email;
-    wizard.EnryptionKey = user.EnryptionKey;
+    wizard.EncryptionKey = user.EncryptionKey;
     wizard.UserData.AccessToken = user.PersonalAccessToken;
     wizard.WizardId = user.Id;
 
@@ -49,12 +49,34 @@ public class UserService : IUserService {
     return wizard;
   }
 
-  public Task<WizardUser> GetUserById(Guid id) {
-    throw new NotImplementedException();
+  public async Task<WizardUser> GetUserById(Guid id) {
+    var user = await _userRepository.GetUserById(id);
+    if (user == null) {
+      return null!;
+    }
+    var wizard = new WizardUser();
+    wizard.PlatformId = user.PlatformId;
+    wizard.Username = user.Name;
+    wizard.Email = user.Email;
+    wizard.EncryptionKey = user.EncryptionKey;
+    wizard.UserData.AccessToken = user.PersonalAccessToken;
+    wizard.WizardId = user.Id;
+    return wizard;
   }
 
-  public Task<WizardUser> GetUserByPlatformId(long id) {
-    throw new NotImplementedException();
+  public async Task<WizardUser> GetUserByPlatformId(long id) {
+    var user = await _userRepository.GetUserByPlatformId(id);
+    if (user == null) {
+      return null!;
+    }
+    var wizard = new WizardUser();
+    wizard.PlatformId = user.PlatformId;
+    wizard.Username = user.Name;
+    wizard.Email = user.Email;
+    wizard.EncryptionKey = user.EncryptionKey;
+    wizard.UserData.AccessToken = user.PersonalAccessToken;
+    wizard.WizardId = user.Id;
+    return wizard;
   }
 
   public void DefineServices(IServiceCollection services) {

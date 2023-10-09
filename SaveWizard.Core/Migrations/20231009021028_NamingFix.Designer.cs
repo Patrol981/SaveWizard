@@ -11,8 +11,8 @@ using SaveWizard.Core;
 namespace SaveWizard.Core.Migrations
 {
     [DbContext(typeof(WizardContext))]
-    [Migration("20231007132202_AddRepoNameDateToBackup")]
-    partial class AddRepoNameDateToBackup
+    [Migration("20231009021028_NamingFix")]
+    partial class NamingFix
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

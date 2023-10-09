@@ -47,7 +47,7 @@ namespace SaveWizard.Core.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("EnryptionKey")
+                    b.Property<string>("EncryptionKey")
                         .IsRequired()
                         .HasColumnType("TEXT");
 

@@ -51,7 +51,7 @@ public class App {
       _user.Email = userInfo.Email;
       _user.Username = userInfo.Login;
       _user.PlatformId = userInfo.Id;
-      _user.EnryptionKey = encryptionService.GenerateKey();
+      _user.EncryptionKey = encryptionService.GenerateKey();
 
       _user = await userService.AddUser(_user);
     } else {
@@ -75,7 +75,6 @@ public class App {
 
   private void Render() {
     while (true) {
-      // ConsoleGraphics.Clear();
       ConsoleGraphics.DrawOptions();
       _buffer = Console.ReadLine();
       HandleOption();
@@ -175,7 +174,7 @@ public class App {
     var result = await backupService.GetBackupById(guid);
 
     var file = ioService.LoadFile(result.Filename!);
-    var data = encryptionService.DecryptData<BackupData>(file, _user.EnryptionKey!);
+    var data = encryptionService.DecryptData<BackupData>(file, _user.EncryptionKey!);
 
     await githubService.AddIssuesToNewRemote(_user, data.WizardIssues, $"{result.RepositoryName}_{result.Date.ToString("yyyyMMddTHHmmss")}");
   }
@@ -200,7 +199,7 @@ public class App {
     backup.RepositoryId = repoId;
     backup.WizardIssues = repoInfo.Issues;
 
-    var encrypted = encryptionService.EncryptData(backup, _user.EnryptionKey!);
+    var encrypted = encryptionService.EncryptData(backup, _user.EncryptionKey!);
     var date = DateTime.Now.ToString("yyyyMMddTHHmmss");
     var filename = $"{repoInfo.RepositoryName}-{date}.wiz";
 
